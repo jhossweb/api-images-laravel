@@ -21,6 +21,7 @@ Route::middleware('auth:sanctum')->group(function () {
     
     Route::get("/images", [ImageController::class, 'index']);
     Route::post("/images", [ImageController::class, 'store']);
+    Route::delete("/images/{image}", [ImageController::class, 'destroy']);
 
 });
 

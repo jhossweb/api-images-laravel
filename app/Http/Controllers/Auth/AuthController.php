@@ -14,6 +14,7 @@ class AuthController extends Controller
         
         $credentials = $request->validated();
         
+        
         if(!Auth::attempt($credentials)) {
             return response()->json([
                 "status" => false,
