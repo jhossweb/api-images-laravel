@@ -5,14 +5,25 @@ namespace App\Http\Controllers\Images;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\ImagesSavedRequest;
 use App\Models\Image;
+use App\Repositories\ImageRepository;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 
+
+
 class ImageController extends Controller
 {
+
+    private $imageRepository;
+
+    function __construct(ImageRepository $imageRepository)
+    {
+        $this->imageRepository = $imageRepository; 
+    }
+
     public function index()
     {
-        $img = Image::with("user")->get(); //lazy loading
+        $img = $this->imageRepository->all();
 
         return response()->json([
             "status" => true,
@@ -24,14 +35,8 @@ class ImageController extends Controller
     
     public function store(ImagesSavedRequest $request)
     {
-        $img = time() . "_" . $request->file("url_image")->getClientOriginalName();        
-        $nameImgServer = "user_photo" . $request["user_id"] . $img;
-       
-        $imgServer = Storage::disk("test")->put($nameImgServer, "public/images/");
-        $imgSaved = Image::create([
-            "url_image" => "/storage/images/" . $nameImgServer,
-            "user_id" => $request["user_id"]
-        ]);
+        $imgSaved = $this->imageRepository->createServer($request);
+        $imgSavedDB = $this->imageRepository->creacteBD($request);
 
         if(!$imgSaved) return response()->json([
             "status" => false,
@@ -40,7 +45,7 @@ class ImageController extends Controller
 
         return response()->json([
             "status" => true,
-            "message" => "{$imgSaved}"
+            "message" => "{$imgSavedDB}"
         ], 201);
         // return $request->validated();
     }
