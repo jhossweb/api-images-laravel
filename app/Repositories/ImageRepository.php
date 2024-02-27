@@ -5,6 +5,7 @@ namespace App\Repositories;
 use Illuminate\Support\Facades\Storage;
 use App\Http\Requests\ImagesSavedRequest;
 use App\Models\Image;
+use App\Models\Tag;
 
 class ImageRepository
 {
@@ -33,6 +34,14 @@ class ImageRepository
             "url_image" => "/storage/images/" . $this->createServer($request),
             "user_id" => $request["user_id"]
         ]);
+
+        $tags = $request->input("tag_name");
+        $tag_name = json_decode($tags, true);
+        
+        foreach ($tag_name as $tagName) {
+            $tag = Tag::firstOrCreate(["tag_name" => $tagName]);
+            $imgSaved->tags()->attach($tag->id);
+        }
         return $imgSaved;
     }
 }

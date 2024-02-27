@@ -6,20 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
-class Image extends Model
+class Tag extends Model
 {
     use HasFactory;
 
-    protected $fillable = ["url_image", "user_id"];
-
-    function user() {
-        return $this->belongsTo(User::class);
-    }
-
+    protected $fillable = ["tag_name"];
 
     // Relación muchos a muchos
-    
-    function tags(): BelongsToMany {
-        return $this->belongsToMany(Tag::class);
+    function images(): BelongsToMany {
+        return $this->belongsToMany(Image::class);
     }
 }

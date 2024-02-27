@@ -32,7 +32,6 @@ class ImageController extends Controller
 
     }
 
-    
     public function store(ImagesSavedRequest $request)
     {
         $imgSaved = $this->imageRepository->createServer($request);
@@ -49,33 +48,21 @@ class ImageController extends Controller
         ], 201);
     }
 
-    /**
-     * Display the specified resource.
-     */
     public function show(Image $image)
     {
         //
     }
-
-    /**
-     * Show the form for editing the specified resource.
-     */
+    
     public function edit(Image $image)
     {
         //
     }
-
-    /**
-     * Update the specified resource in storage.
-     */
+    
     public function update(Request $request, Image $image)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     */
     public function destroy(Image $image)
     {
         $urlDelete = str_replace("storage", "public", $image->url_image);

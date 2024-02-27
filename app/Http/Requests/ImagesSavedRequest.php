@@ -23,7 +23,8 @@ class ImagesSavedRequest extends FormRequest
     {
         return [
             "url_image" => "required|image",
-            "user_id" => "required"
+            "user_id" => "required",
+            "tag_name" => "nullable"
         ];
     }
 }
