@@ -47,7 +47,6 @@ class ImageController extends Controller
             "status" => true,
             "message" => "{$imgSavedDB}"
         ], 201);
-        // return $request->validated();
     }
 
     /**
