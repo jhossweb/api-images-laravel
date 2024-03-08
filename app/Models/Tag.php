@@ -11,9 +11,11 @@ class Tag extends Model
     use HasFactory;
 
     protected $fillable = ["tag_name"];
+    protected $hidden = ["created_at", "updated_at"];
 
     // Relación muchos a muchos
     function images(): BelongsToMany {
         return $this->belongsToMany(Image::class);
     }
+
 }

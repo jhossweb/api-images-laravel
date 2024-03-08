@@ -15,11 +15,11 @@ class ImageRepository
         $this->model = new Image;
     }
 
-    function all () {
-        return $this->model->with("user")->get(); //lazy loading
+    function allRepository () {
+        return $this->model->with(["user", "tags"])->get(); // Carga ansiosa
     }
 
-    function createServer(ImagesSavedRequest $request) {
+    function createServerRepository (ImagesSavedRequest $request) {
 
         $img = time() . "_" . $request->file("url_image")->getClientOriginalName();        
         $nameImgServer = "user_photo" . $request["user_id"] . $img;
@@ -29,19 +29,31 @@ class ImageRepository
         return $nameImgServer;
     }
     
-    function creacteBD (ImagesSavedRequest $request) {
+    function creacteBDRepository (ImagesSavedRequest $request) {
         $imgSaved = Image::create([
-            "url_image" => "/storage/images/" . $this->createServer($request),
+            "url_image" => "/storage/images/" . $this->createServerRepository($request),
             "user_id" => $request["user_id"]
         ]);
 
         $tags = $request->input("tag_name");
-        $tag_name = json_decode($tags, true);
-        
-        foreach ($tag_name as $tagName) {
-            $tag = Tag::firstOrCreate(["tag_name" => $tagName]);
-            $imgSaved->tags()->attach($tag->id);
+        if($tags) {
+            $tag_name = json_decode($tags, true);
+            
+            foreach ($tag_name as $tagName) {
+                $tag = Tag::firstOrCreate(["tag_name" => $tagName]);
+                $imgSaved->tags()->attach($tag->id);
+            }
         }
         return $imgSaved;
+    }
+
+    function destroyRepository (Image $image) {
+
+        $urlDelete = str_replace("storage", "public", $image->url_image);
+        Storage::delete($urlDelete);
+
+        $image->delete();
+        
+        return $image;
     }
 }

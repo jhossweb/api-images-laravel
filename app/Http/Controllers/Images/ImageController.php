@@ -23,7 +23,7 @@ class ImageController extends Controller
 
     public function index()
     {
-        $img = $this->imageRepository->all();
+        $img = $this->imageRepository->allRepository();
 
         return response()->json([
             "status" => true,
@@ -34,8 +34,8 @@ class ImageController extends Controller
 
     public function store(ImagesSavedRequest $request)
     {
-        $imgSaved = $this->imageRepository->createServer($request);
-        $imgSavedDB = $this->imageRepository->creacteBD($request);
+        $imgSaved = $this->imageRepository->createServerRepository($request);
+        $imgSavedDB = $this->imageRepository->creacteBDRepository($request);
 
         if(!$imgSaved) return response()->json([
             "status" => false,
@@ -44,7 +44,7 @@ class ImageController extends Controller
 
         return response()->json([
             "status" => true,
-            "message" => "{$imgSavedDB}"
+            "message" => $imgSavedDB
         ], 201);
     }
 
@@ -65,13 +65,19 @@ class ImageController extends Controller
 
     public function destroy(Image $image)
     {
-        $urlDelete = str_replace("storage", "public", $image->url_image);
-        Storage::delete($urlDelete);
-
-        $image->delete();
+        $imgDeleted = $this->imageRepository->destroyRepository($image);
+        
+        if(!$imgDeleted) 
+            return response()->json([
+                "status" => false,
+                "message" => "No se Eliminó la imagen en la base de datos"
+            ]);
+        
         return response()->json([
             "status" => true,
-            "message" => "images deleted"
+            "message" => "Imagen eliminada"
         ]);
     }
+
+
 }
